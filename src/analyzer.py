@@ -1,6 +1,7 @@
-from datetime import datetime, timezone
-from src.config import SCORE_WEIGHTS
 import logging
+from datetime import datetime, timezone
+
+from src.config import SCORE_WEIGHTS
 
 logger = logging.getLogger(__name__)
 

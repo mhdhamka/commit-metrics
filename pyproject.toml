@@ -1,0 +1,3 @@
+[tool.ruff]
+# Add BLE001 to your ignore list
+ignore = ["BLE001"]

@@ -1,5 +1,6 @@
-import streamlit as st
 import requests
+import streamlit as st
+
 from src.fix_generator import generate_fix_snippet
 
 # FastAPI backend URL (defaults to local development server)
@@ -236,6 +237,6 @@ if run_audit:
             except requests.exceptions.ConnectionError:
                 st.error(f"Could not connect to the FastAPI backend at `{API_BASE_URL}`. Make sure your FastAPI server is running (`uvicorn api.main:app --reload`)!")
             except Exception as e:
-                st.error(f"An unexpected error occurred: {str(e)}")
+                st.error(f"An unexpected error occurred: {e!s}")
 else:
     st.info("Enter a GitHub username in the sidebar and click **Run Portfolio Audit** to begin.")

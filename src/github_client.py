@@ -1,6 +1,8 @@
-from github import Github, GithubException
-from src.config import settings
 import logging
+
+from github import Github, GithubException
+
+from src.config import settings
 
 logger = logging.getLogger(__name__)
 
@@ -52,7 +54,7 @@ class GitHubClient:
             logger.error(f"GitHub API Error for user {username}: {e.data.get('message', str(e))}")
             raise ValueError(f"Could not fetch data for username '{username}'. Check if user exists or token is valid.")
         except Exception as e:
-            logger.error(f"Unexpected error fetching repos for {username}: {str(e)}")
+            logger.error(f"Unexpected error fetching repos for {username}: {e!s}")
             raise
 
     def _check_file_exists(self, repo, path: str) -> bool:

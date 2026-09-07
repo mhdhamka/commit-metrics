@@ -1,9 +1,11 @@
+import logging
+
 from fastapi import FastAPI, HTTPException, Query, Response
 from fastapi.middleware.cors import CORSMiddleware
-from src.github_client import GitHubClient
+
 from src.analyzer import RepoAnalyzer
-from src.database import save_audit_log, get_audit_history
-import logging
+from src.database import get_audit_history, save_audit_log
+from src.github_client import GitHubClient
 
 # Setup logging
 logging.basicConfig(level=logging.INFO)
@@ -76,10 +78,10 @@ def audit_user_repositories(
         }
 
     except ValueError as ve:
-        logger.warning(f"Validation error for {username}: {str(ve)}")
+        logger.warning(f"Validation error for {username}: {ve!s}")
         raise HTTPException(status_code=400, detail=str(ve))
     except Exception as e:
-        logger.error(f"Unexpected error during audit for {username}: {str(e)}")
+        logger.error(f"Unexpected error during audit for {username}: {e!s}")
         raise HTTPException(status_code=500, detail="An internal server error occurred while processing the repository audit.")
 
 
