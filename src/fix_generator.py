@@ -1,7 +1,4 @@
-from typing import Union
-
-
-def generate_fix_snippet(issue_type: str, tech_stack: Union[str, list[str]] = "Python") -> str:
+def generate_fix_snippet(issue_type: str, tech_stack: str | list[str] = "Python") -> str:
     issue_lower = issue_type.lower()
     
     # Normalize tech_stack whether it is passed as a string or a list from RepoAnalyzer
