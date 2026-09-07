@@ -32,3 +32,5 @@ jobs:
     - name: Run unit tests with pytest
       run: |
         pytest
+      env:
+        PYTHONPATH: .
