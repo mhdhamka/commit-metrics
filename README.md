@@ -1,8 +1,22 @@
+<div align="center">
+
 # Commit Metrics
 
 > Automated GitHub Repository Health & Portfolio Auditor
 
 **CommitMetrics** is a developer tool designed to evaluate public GitHub profiles, assess repository health against modern engineering standards, and generate actionable insights to level up portfolio quality.
+
+[Live Demo](https://commit-metrics.streamlit.app/) · [Report Bug](https://github.com/mhdhamka/commit-metrics/issues) · [Request Feature](https://github.com/mhdhamka/commit-metrics/issues)
+
+![License](https://img.shields.io/badge/license-MIT-blue.svg)
+![Python](https://img.shields.io/badge/Python-3.11%2B-3776ab?logo=python&logoColor=white)
+![FastAPI](https://img.shields.io/badge/FastAPI-0.110%2B-009688?logo=fastapi&logoColor=white)
+![Streamlit](https://img.shields.io/badge/Streamlit-1.32%2B-FF4B4B?logo=streamlit&logoColor=white)
+![Pydantic](https://img.shields.io/badge/Pydantic-2.6%2B-E92063?logo=pydantic&logoColor=white)
+![Pytest](https://img.shields.io/badge/Pytest-8.0%2B-0A9EDC?logo=pytest&logoColor=white)
+![Ruff](https://img.shields.io/badge/Ruff-0.3%2B-261230?logo=ruff&logoColor=white)
+
+</div>
 
 ---
 
@@ -50,7 +64,13 @@ pip install -r requirements.txt
 ### 4. Configure environment variables:
 Copy .env.example to .env and add your GitHub Personal Access Token to avoid API rate limits.
 
-### 5. Run the application:
+### 5. Run tests:
+Verify that your environment and code pass all unit tests:
+```Bash
+python -m pytest
+```
+
+### 6. Run the application:
 
 #### Start FastAPI Backend:
 ```Bash
