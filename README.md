@@ -23,8 +23,10 @@
 ## Tech Stack
 
 * **Backend & Logic:** Python, PyGithub, Pydantic
-* **API Layer:** FastAPI (`/audit/{username}`)
-* **Frontend Dashboard:** Streamlit (GitHub Dark-mode developer interface)
+* **Database & Persistence:** SQLite (historical audit logs and tracking)
+* **API Layer:** FastAPI (`/audit/{username}`, `/badge/{username}`)
+* **Frontend Dashboard:** (Streamlit GitHub Dark-mode developer interface)
+* **Terminal Automation:** Typer (CLI-based health audits)
 * **Testing & Quality:** Pytest, Ruff
 
 ---
@@ -32,12 +34,27 @@
 ## Core Features
 
 * **Smart Evaluation Engine:** Grades repositories across four key pillars weighted to reflect real-world engineering standards:
-  * **Documentation (25%):** README, License, Contributing guidelines.
+  * **Documentation (25%):** README, License, and structural clarity.
   * **Automation & CI/CD (30%):** GitHub Actions workflows and pipeline checks.
-  * **Maintenance (25%):** Update recency and activity hygiene.
+  * **Maintenance (25%):** Update recency, commit frequency, and branch hygiene.
   * **Security & Best Practices (20%):** Proper `.gitignore` usage and repository setup.
-* **Instant Grading:** Outputs a weighted portfolio letter grade (A+ to F) alongside a breakdown score.
-* **Actionable Recommendations:** Delivers concrete suggestions for every repository lacking baseline standards.
+
+* **Advanced Tech Intelligence & Hygiene:** 
+  * **Smart Tech Stack Detection:** Automatically parses project structures (`requirements.txt`, `package.json`, `Dockerfile`) to identify underlying frameworks (Python, Node.js, Docker).
+  * **Zombie Branch Detection:** Flags stale branches left untouched for over 60 days to prevent codebase clutter.
+
+* **Historical Tracking & Persistence:** 
+  * **SQLite Audit Logs:** Automatically records portfolio health scores and timestamps over time, allowing developers to track how their engineering standards improve.
+
+* **Terminal Automation (CLI):** 
+  * **Typer-Based CLI Tool:** Execute quick portfolio health checks straight from your command line using simple commands like `python -m cli.app check <username>`.
+
+* **Actionable Remediation & Dynamic Badges:**
+  * **One-Click Fix Generators:** Provides copy-pasteable configuration templates (boilerplate READMEs, CI/CD YAML pipelines, and `.gitignore` files) directly inside the Streamlit dashboard for underperforming repos.
+  * **Dynamic Profile Badges:** Exposes a `/badge/{username}` SVG endpoint to embed live, real-time repository health grades directly into personal GitHub profile READMEs.
+
+* **Instant Grading & Dashboard:** 
+  * **Multi-Format Output:** Delivers a weighted portfolio letter grade (A+ to F) alongside a GitHub Primer dark-mode UI with dimension breakdown scores and aggregate insights.
 
 ---
 
@@ -94,13 +111,18 @@ commit-metrics/
 │   └── workflows/         # CI/CD pipeline (linting, tests)
 ├── api/
 │   ├── __init__.py
-│   └── main.py            # FastAPI endpoints
+│   └── main.py            # FastAPI endpoints (/audit, /badge)
 ├── src/
 │   ├── __init__.py
-│   ├── config.py          # Constants & scoring weights
-│   ├── github_client.py   # GitHub API integration
-│   ├── analyzer.py        # Core grading & health logic
+│   ├── config.py          # Constants, scoring weights, paths
+│   ├── database.py        # SQLite storage for historical audit logs
+│   ├── github_client.py   # PyGithub / async API integration
+│   ├── analyzer.py        # Core grading, tech stack & hygiene logic
+│   ├── fix_generator.py   # "Fix It" snippet generator
 │   └── logging_config.py  # Structured logging setup
+├── cli/
+│   ├── __init__.py
+│   └── app.py             # Typer CLI implementation
 ├── ui/
 │   └── app.py             # Streamlit dashboard interface
 ├── tests/

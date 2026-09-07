@@ -44,7 +44,7 @@ class RepoAnalyzer:
         }
 
     def _analyze_single_repo(self, repo: dict) -> dict:
-        """Evaluates an individual repository across core health dimensions."""
+        """Evaluates an individual repository across core health dimensions, tech stack, and hygiene."""
         
         # 1. Documentation Score (README, License)
         doc_score = 0.0
@@ -61,6 +61,13 @@ class RepoAnalyzer:
 
         # 4. Security & Best Practices (.gitignore presence)
         security_score = 1.0 if repo.get("has_gitignore") else 0.0
+
+        # 5. Advanced Intelligence: Tech Stack & Zombie Branches
+        file_list = repo.get("file_list", [])
+        branches = repo.get("branches", [])
+        
+        detected_stack = self._detect_tech_stack(file_list)
+        zombie_branches = self._check_zombie_branches(branches)
 
         # Weighted calculation
         final_score = (
@@ -83,11 +90,15 @@ class RepoAnalyzer:
             suggestions.append("Set up GitHub Actions workflow in `.github/workflows/` for automated testing/linting.")
         if not repo.get("has_gitignore"):
             suggestions.append("Add a proper `.gitignore` file to prevent tracking build artifacts or secrets.")
+        if zombie_branches > 0:
+            suggestions.append(f"Clean up {zombie_branches} stale branch(es) untouched for over 60 days.")
 
         return {
             "name": repo["name"],
             "html_url": repo["html_url"],
             "language": repo.get("language") or "Unknown",
+            "tech_stack": detected_stack,
+            "zombie_branches": zombie_branches,
             "health_score": final_score,
             "grade": grade,
             "breakdown": {
@@ -99,12 +110,36 @@ class RepoAnalyzer:
             "suggestions": suggestions,
         }
 
+    def _detect_tech_stack(self, file_list: list[str]) -> list[str]:
+        """Inspects repository files to determine the primary tech stack."""
+        stack = []
+        if any("pyproject.toml" in f.lower() or "requirements.txt" in f.lower() for f in file_list):
+            stack.append("Python")
+        if any("package.json" in f.lower() for f in file_list):
+            stack.append("Node.js")
+        if any("dockerfile" in f.lower() for f in file_list):
+            stack.append("Docker")
+        return stack if stack else ["Generic"]
+
+    def _check_zombie_branches(self, branches: list[dict]) -> int:
+        """Counts branches untouched for over 60 days."""
+        zombie_count = 0
+        now = datetime.now(timezone.utc)
+        for branch in branches:
+            last_commit_date = branch.get("last_committed_date")
+            if last_commit_date:
+                if last_commit_date.tzinfo is None:
+                    last_commit_date = last_commit_date.replace(tzinfo=timezone.utc)
+                delta = (now - last_commit_date).days
+                if delta > 60:
+                    zombie_count += 1
+        return zombie_count
+
     def _calculate_maintenance_score(self, updated_at) -> float:
         """Scores maintenance based on how recently the repository was updated."""
         if not updated_at:
             return 0.0
         
-        # Ensure timezone-aware comparison
         if updated_at.tzinfo is None:
             updated_at = updated_at.replace(tzinfo=timezone.utc)
             

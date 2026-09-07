@@ -1,5 +1,6 @@
 import streamlit as st
 import requests
+from src.fix_generator import generate_fix_snippet
 
 # FastAPI backend URL (defaults to local development server)
 API_BASE_URL = "http://127.0.0.1:8000"
@@ -193,7 +194,8 @@ if run_audit:
                     st.markdown("### Repository Health Breakdown")
                     
                     for repo in summary["repositories"]:
-                        with st.expander(f"{repo['name']} ({repo['language']}) — Grade: **{repo['grade']}** ({repo['health_score']}%)"):
+                        tech_stack_str = ", ".join(repo.get('tech_stack', ['Generic']))
+                        with st.expander(f"{repo['name']} ({repo['language']} | Stack: {tech_stack_str}) — Grade: **{repo['grade']}** ({repo['health_score']}%)"):
                             rc1, rc2 = st.columns([1, 2])
                             
                             with rc1:
@@ -203,12 +205,27 @@ if run_audit:
                                 st.write(f"- CI/CD Workflows: **{repo['breakdown']['ci_cd']}%**")
                                 st.write(f"- Maintenance: **{repo['breakdown']['maintenance']}%**")
                                 st.write(f"- Security / `.gitignore`: **{repo['breakdown']['security']}%**")
+                                st.write(f"- Stale Branches (>60 days): **{repo.get('zombie_branches', 0)}**")
                                 
                             with rc2:
                                 st.markdown("##### Actionable Fixes:")
                                 if repo["suggestions"]:
                                     for suggestion in repo["suggestions"]:
                                         st.markdown(f"- {suggestion}")
+                                        
+                                    # One-Click Fix Generators based on repository issues
+                                    st.markdown("##### Quick Configuration Snippets:")
+                                    for suggestion in repo["suggestions"]:
+                                        if "README.md" in suggestion:
+                                            with st.expander("View Suggested README Template"):
+                                                st.code(generate_fix_snippet("missing_readme"), language="markdown")
+                                        elif "GitHub Actions" in suggestion:
+                                            primary_stack = repo.get("tech_stack", ["Python"])[0]
+                                            with st.expander("View Suggested CI/CD Workflow"):
+                                                st.code(generate_fix_snippet("missing_ci", primary_stack), language="yaml")
+                                        elif ".gitignore" in suggestion:
+                                            with st.expander("View Suggested .gitignore"):
+                                                st.code(generate_fix_snippet("missing_gitignore"), language="text")
                                 else:
                                     st.markdown("*No improvements needed! This repo meets elite standards.*")
                                     
