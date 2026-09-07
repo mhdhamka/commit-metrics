@@ -178,7 +178,7 @@ class RepoAnalyzer:
         
         recs = []
         if missing_readmes > 0:
-            recs.append(f"{missing_readmes} of your repositories are missing a `README.md`. Strong documentation drives portfolio views.")
+            recs.append(f"{missing_readmes} of the repositories are missing a `README.md`. Strong documentation drives portfolio views.")
         if missing_workflows > 0:
             recs.append(f"{missing_workflows} repositories lack CI/CD pipelines. Add automated testing via GitHub Actions.")
             
