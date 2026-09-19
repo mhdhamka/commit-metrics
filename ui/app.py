@@ -11,8 +11,8 @@ import streamlit as st
 
 from src.fix_generator import generate_fix_snippet
 
-# FastAPI backend URL (defaults to local development server)
-API_BASE_URL = "http://127.0.0.1:8000"
+# FastAPI backend URL (pointing to live Render deployment)
+API_BASE_URL = "https://commit-metrics.onrender.com"
 
 st.set_page_config(
     page_title="CommitMetrics | GitHub Portfolio Auditor",
@@ -243,7 +243,7 @@ if run_audit:
                     st.error(f"Error from API: {err_detail}")
                     
             except requests.exceptions.ConnectionError:
-                st.error(f"Could not connect to the FastAPI backend at `{API_BASE_URL}`. Make sure your FastAPI server is running (`uvicorn api.main:app --reload`)!")
+                st.error(f"Could not connect to the FastAPI backend at `{API_BASE_URL}`. Make sure your Render service is active!")
             except Exception as e:
                 st.error(f"An unexpected error occurred: {e!s}")
 else:
